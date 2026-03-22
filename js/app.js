@@ -289,15 +289,6 @@ async function importModules() {
 async function init() {
   showLoadingOverlay();
 
-  // Retry button
-  const retryBtn = document.getElementById('btn-retry');
-  if (retryBtn) {
-    retryBtn.addEventListener('click', () => {
-      hideErrorOverlay();
-      init();
-    });
-  }
-
   try {
     // Load map and data in parallel for maximum speed
     const [map, treeData] = await Promise.all([
@@ -337,4 +328,14 @@ async function init() {
 }
 
 // ── Boot ─────────────────────────────────────────────────────
-document.addEventListener('DOMContentLoaded', init);
+document.addEventListener('DOMContentLoaded', () => {
+  // Retry button — registered once, outside init()
+  const retryBtn = document.getElementById('btn-retry');
+  if (retryBtn) {
+    retryBtn.addEventListener('click', () => {
+      document.getElementById('error-overlay').classList.add('hidden');
+      init();
+    });
+  }
+  init();
+});
