@@ -12,6 +12,8 @@ import {
   FETCH_TIMEOUT_MS,
 } from './config.js';
 
+import { processTreeData, computeStoryData } from './trees.js';
+
 // ── Shared application state ─────────────────────────────────
 export const state = {
   map:           null,
@@ -299,13 +301,10 @@ async function init() {
     state.map      = map;
     state.treeData = treeData;
 
-    // TODO (Task 2): processTreeData() and computeStoryData() will be
-    // imported here to enrich features with _color, _protected, etc.
-    // Example:
-    //   import { processTreeData } from './trees.js';
-    //   import { computeStoryData } from './stories.js';
-    //   processTreeData(state);
-    //   state.storyData = computeStoryData(state.treeData);
+    // Enrich each feature with computed properties (_color, _protected, _genus,
+    // _plantingYear, _decade) and precompute aggregate story data.
+    processTreeData(state.treeData);
+    state.storyData = computeStoryData(state.treeData);
 
     addTreeLayer();
 
