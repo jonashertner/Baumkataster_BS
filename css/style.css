@@ -254,6 +254,7 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 }
 .mapboxgl-popup-tip { border-top-color: var(--c-bg-raised) !important; }
 .mapboxgl-ctrl-attrib { font-size: 10px !important; opacity: 0.5; }
+.mapboxgl-ctrl-top-right { top: 48px !important; }
 
 /* Dark mode: invert Mapbox controls */
 @media (prefers-color-scheme: dark) {
