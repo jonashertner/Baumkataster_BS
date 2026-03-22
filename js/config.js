@@ -4,7 +4,7 @@
 // ============================================================
 
 export const MAPBOX_TOKEN =
-  'pk.REPLACE_WITH_YOUR_MAPBOX_PUBLIC_TOKEN';
+  'pk.eyJ1Ijoiam9uYXNoZXJ0bmVyIiwiYSI6ImNtbjI3d2JzdzB2aTUycnNqdnU3azhhczYifQ.nblKYvXyQR8CYiSq5zTnqQ';
 
 export const API_URL =
   'https://data.bs.ch/api/explore/v2.1/catalog/datasets/100052/exports/geojson' +
