@@ -163,14 +163,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
 .filter-select:focus { border-color: var(--c-green-500); outline: none; }
 
 .filter-range-row {
-  display: flex; align-items: center; gap: 8px;
+  display: flex; align-items: center; gap: 12px;
 }
 .filter-range {
   flex: 1; accent-color: var(--c-green-500); cursor: pointer;
+  height: 4px;
 }
 .filter-range-display {
   font-size: 13px; font-weight: 600; color: var(--c-text-2);
-  min-width: 60px; text-align: center; font-variant-numeric: tabular-nums;
+  min-width: 80px; text-align: right; font-variant-numeric: tabular-nums;
+  white-space: nowrap;
 }
 
 .filter-chips { display: flex; gap: 6px; flex-wrap: wrap; }

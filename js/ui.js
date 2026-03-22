@@ -630,57 +630,43 @@ function setupFilterBar(state) {
   speciesGroup.appendChild(speciesSelect);
   bar.appendChild(speciesGroup);
 
-  // ── Age range ─────────────────────────────────────────────
+  // ── Age range — single slider for max age ─────────────────
   const ageGroup = makeGroup('filter.age');
 
   const ageRangeWrap = document.createElement('div');
   ageRangeWrap.className = 'filter-range-row';
 
-  const minSlider = document.createElement('input');
-  minSlider.type = 'range';
-  minSlider.className = 'filter-range';
-  minSlider.min = '0';
-  minSlider.max = String(maxAge);
-  minSlider.value = '0';
-
-  const maxSlider = document.createElement('input');
-  maxSlider.type = 'range';
-  maxSlider.className = 'filter-range';
-  maxSlider.min = '0';
-  maxSlider.max = String(maxAge);
-  maxSlider.value = String(maxAge);
-
   const ageDisplay = document.createElement('span');
   ageDisplay.className = 'filter-range-display';
 
+  const ageSlider = document.createElement('input');
+  ageSlider.type = 'range';
+  ageSlider.className = 'filter-range';
+  ageSlider.min = '0';
+  ageSlider.max = String(maxAge);
+  ageSlider.value = String(maxAge);
+
   function updateAgeDisplay() {
-    ageDisplay.textContent = minSlider.value + ' \u2013 ' + maxSlider.value;
+    const val = parseInt(ageSlider.value, 10);
+    if (val >= maxAge) {
+      ageDisplay.textContent = 'Alle';
+    } else {
+      ageDisplay.textContent = 'bis ' + val + ' Jahre';
+    }
   }
   updateAgeDisplay();
 
-  minSlider.addEventListener('input', () => {
-    if (parseInt(minSlider.value, 10) > parseInt(maxSlider.value, 10)) {
-      minSlider.value = maxSlider.value;
-    }
-    state.activeFilters.ageMin = parseInt(minSlider.value, 10);
+  ageSlider.addEventListener('input', () => {
+    const val = parseInt(ageSlider.value, 10);
+    state.activeFilters.ageMin = 0;
+    state.activeFilters.ageMax = val;
     updateAgeDisplay();
     applyFilters(state);
     updateResetBtn();
   });
 
-  maxSlider.addEventListener('input', () => {
-    if (parseInt(maxSlider.value, 10) < parseInt(minSlider.value, 10)) {
-      maxSlider.value = minSlider.value;
-    }
-    state.activeFilters.ageMax = parseInt(maxSlider.value, 10);
-    updateAgeDisplay();
-    applyFilters(state);
-    updateResetBtn();
-  });
-
-  ageRangeWrap.appendChild(minSlider);
+  ageRangeWrap.appendChild(ageSlider);
   ageRangeWrap.appendChild(ageDisplay);
-  ageRangeWrap.appendChild(maxSlider);
   ageGroup.appendChild(ageRangeWrap);
   bar.appendChild(ageGroup);
 
@@ -773,8 +759,7 @@ function setupFilterBar(state) {
     state.activeFilters.districts  = [];
 
     speciesSelect.value  = '';
-    minSlider.value      = '0';
-    maxSlider.value      = String(maxAge);
+    ageSlider.value      = String(maxAge);
     updateAgeDisplay();
 
     protChips.querySelectorAll('.chip.active').forEach((c) => c.classList.remove('active'));
