@@ -836,6 +836,13 @@ body.filter-visible #map {
   .story-card:hover { background: #fafafa; box-shadow: 0 2px 8px var(--color-shadow); }
 }
 
+/* === Card close button === */
+.card-close {
+  position: absolute; top: 8px; right: 10px; background: none; border: none;
+  font-size: 18px; color: #999; cursor: pointer; line-height: 1; z-index: 1;
+}
+.card-close:hover { color: #666; }
+
 /* === Small mobile (< 375px) === */
 @media (max-width: 375px) {
   .nav-logo { font-size: 15px; }

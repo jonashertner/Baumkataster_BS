@@ -491,7 +491,11 @@ function setupFindMyTree(state) {
 
   if (card) {
     card.addEventListener('click', (e) => {
-      if (e.target.closest('#find-my-tree-close')) return;
+      if (e.target.closest('#find-my-tree-close')) {
+        card.classList.add('hidden');
+        if (fab) fab.classList.remove('hidden');
+        return;
+      }
       handleFindMyTree(state);
     });
   }

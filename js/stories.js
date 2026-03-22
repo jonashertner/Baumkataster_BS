@@ -276,8 +276,8 @@ function buildCards(container, panel, map, sd) {
   // ── Story 4 — Wie Basel grüner wurde ───────────────────
   {
     const decadeData = sd.decades || {};
-    const sorted     = decadeData.sorted  || [];
-    const byDecade   = decadeData.byDecade || {};
+    const sorted     = decadeData.keys  || [];
+    const byDecade   = decadeData.map || new Map();
     const card       = createCard();
 
     const titleNode = document.createElement('div');
@@ -300,7 +300,7 @@ function buildCards(container, panel, map, sd) {
     const decadeSteps = [];
 
     for (const decade of sorted) {
-      const count = (byDecade[decade] || []).length;
+      const count = (byDecade.get ? byDecade.get(decade) : byDecade[decade] || []).length;
 
       const step = document.createElement('div');
       step.className      = 'decade-step';
@@ -429,7 +429,7 @@ function buildCards(container, panel, map, sd) {
 
     const leftSpecies = document.createElement('p');
     leftSpecies.className   = 'comp-stat';
-    leftSpecies.textContent = (kb.species || 0).toLocaleString('de-CH');
+    leftSpecies.textContent = (kb.uniqueSpecies || 0).toLocaleString('de-CH');
 
     const leftAge = document.createElement('p');
     leftAge.className   = 'comp-stat';
@@ -458,7 +458,7 @@ function buildCards(container, panel, map, sd) {
 
     const rightSpecies = document.createElement('p');
     rightSpecies.className   = 'comp-stat';
-    rightSpecies.textContent = (gb.species || 0).toLocaleString('de-CH');
+    rightSpecies.textContent = (gb.uniqueSpecies || 0).toLocaleString('de-CH');
 
     const rightAge = document.createElement('p');
     rightAge.className   = 'comp-stat';

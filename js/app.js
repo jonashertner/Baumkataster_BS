@@ -222,8 +222,8 @@ async function handlePermalink() {
 
   try {
     const { flyToTree, showTreeDetail } = await import('./ui.js');
-    flyToTree(feature);
-    showTreeDetail(feature);
+    flyToTree(state.map, feature);
+    showTreeDetail(state, feature);
   } catch (err) {
     // ui.js will be created in a later task — fail silently for now
     console.warn('[handlePermalink] ui.js not yet available:', err.message);
@@ -248,6 +248,8 @@ function hideLoadingOverlay() {
     () => el.classList.add('hidden'),
     { once: true },
   );
+  // Fallback in case transitionend doesn't fire
+  setTimeout(() => el.classList.add('hidden'), 600);
 }
 
 function showErrorOverlay() {

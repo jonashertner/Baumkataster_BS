@@ -41,8 +41,8 @@ async function shareTree(state, feature) {
 
   const baumnr        = props.ba_baumnr || '';
   const baumart       = props.baumart_deutsch || 'Baum';
-  const strasse       = props.strasse || '';
-  const alter         = props.baumalter != null ? props.baumalter : null;
+  const strasse       = props.ba_strasse || '';
+  const alter         = props.ba_baumalter != null ? props.ba_baumalter : null;
 
   const url = `${window.location.origin}${window.location.pathname}#/tree/${baumnr}`;
 
@@ -125,12 +125,12 @@ function showCopiedToast() {
 export function generateShareCard(state, feature) {
   const props = feature.properties || {};
 
-  const baumart    = props.baumart_deutsch || 'Baum';
-  const latinName  = props.baumart_latein  || '';
-  const strasse    = props.strasse         || '';
-  const quartier   = props.quartier        || '';
-  const alter      = props.baumalter != null ? `${props.baumalter} Jahre alt` : 'Alter unbekannt';
-  const protected_ = !!props.geschuetzt;
+  const baumart    = props.baumart_deutsch     || 'Baum';
+  const latinName  = props.baumart_lateinisch || '';
+  const strasse    = props.ba_strasse         || '';
+  const quartier   = props.ba_kreis           || '';
+  const alter      = props.ba_baumalter != null ? `${props.ba_baumalter} Jahre alt` : 'Alter unbekannt';
+  const protected_ = !!props._protected;
 
   const accentColor  = getSpeciesColor(latinName) || '#4CAF50';
 

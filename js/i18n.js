@@ -211,6 +211,9 @@ export function initI18n(state) {
 
     updateAllI18n();
 
+    // Update html lang attribute for accessibility
+    document.documentElement.lang = next;
+
     // Dispatch custom event so other modules can react
     window.dispatchEvent(new CustomEvent('langchange', { detail: { lang: next } }));
   });
