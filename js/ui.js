@@ -566,7 +566,8 @@ function applyFilters(state) {
  * @param {object} state
  */
 function setupFilterBar(state) {
-  const bar = document.getElementById('filter-bar');
+  const panel = document.getElementById('filter-panel');
+  const bar = panel ? panel.querySelector('.filter-panel-inner') : document.getElementById('filter-bar');
   if (!bar || !state.treeData) return;
 
   clearChildren(bar);
@@ -589,13 +590,13 @@ function setupFilterBar(state) {
   if (state.activeFilters.ageMax == null) state.activeFilters.ageMax = maxAge;
   if (!state.activeFilters.districts) state.activeFilters.districts = [];
 
-  // ── Helper: create a labelled filter group ────────────────
+  // ── Helper: create a labelled filter section ────────────────
   function makeGroup(labelKey) {
     const group = document.createElement('div');
-    group.className = 'filter-group';
+    group.className = 'filter-section';
 
-    const label = document.createElement('span');
-    label.className = 'filter-label';
+    const label = document.createElement('div');
+    label.className = 'filter-section-label';
     label.textContent = t(labelKey);
     group.appendChild(label);
 
@@ -633,7 +634,7 @@ function setupFilterBar(state) {
   const ageGroup = makeGroup('filter.age');
 
   const ageRangeWrap = document.createElement('div');
-  ageRangeWrap.className = 'filter-age-range';
+  ageRangeWrap.className = 'filter-range-row';
 
   const minSlider = document.createElement('input');
   minSlider.type = 'range';
@@ -756,9 +757,12 @@ function setupFilterBar(state) {
   distGroup.appendChild(distChips);
   bar.appendChild(distGroup);
 
-  // ── Reset button ──────────────────────────────────────────
+  // ── Actions row ──────────────────────────────────────────
+  const actionsRow = document.createElement('div');
+  actionsRow.className = 'filter-actions hidden';
+
   const resetBtn = document.createElement('button');
-  resetBtn.className = 'btn-reset hidden';
+  resetBtn.className = 'btn-reset';
   resetBtn.textContent = t('filter.reset');
 
   resetBtn.addEventListener('click', () => {
@@ -780,7 +784,8 @@ function setupFilterBar(state) {
     resetBtn.classList.add('hidden');
   });
 
-  bar.appendChild(resetBtn);
+  actionsRow.appendChild(resetBtn);
+  bar.appendChild(actionsRow);
 
   function updateResetBtn() {
     const hasFilters =
@@ -790,19 +795,28 @@ function setupFilterBar(state) {
       state.activeFilters.ageMax < maxAge ||
       (state.activeFilters.districts && state.activeFilters.districts.length > 0);
 
-    resetBtn.classList.toggle('hidden', !hasFilters);
+    actionsRow.classList.toggle('hidden', !hasFilters);
   }
 
-  // ── Mobile filter toggle ──────────────────────────────────
-  // Support both IDs used in HTML (#btn-filter-toggle) and task spec (#btn-filter-mobile)
-  const mobileToggle =
-    document.getElementById('btn-filter-mobile') ||
-    document.getElementById('btn-filter-toggle');
+  // ── Filter toggle button ──────────────────────────────────
+  const filterToggle =
+    document.getElementById('btn-filter-toggle') ||
+    document.getElementById('btn-filter-mobile');
 
-  if (mobileToggle) {
-    mobileToggle.addEventListener('click', () => {
-      bar.classList.toggle('visible-mobile');
-      bar.classList.toggle('hidden-mobile');
+  if (filterToggle && panel) {
+    filterToggle.addEventListener('click', () => {
+      panel.classList.toggle('hidden');
+      filterToggle.classList.toggle('active');
+    });
+
+    // Close panel when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!panel.classList.contains('hidden') &&
+          !panel.contains(e.target) &&
+          !filterToggle.contains(e.target)) {
+        panel.classList.add('hidden');
+        filterToggle.classList.remove('active');
+      }
     });
   }
 }

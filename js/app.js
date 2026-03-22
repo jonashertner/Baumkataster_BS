@@ -244,14 +244,19 @@ function hideLoadingOverlay() {
   const el = document.getElementById('loading-overlay');
   if (!el) return;
 
-  el.classList.add('fade-out');
-  el.addEventListener(
-    'transitionend',
-    () => el.classList.add('hidden'),
-    { once: true },
-  );
-  // Fallback in case transitionend doesn't fire
-  setTimeout(() => el.classList.add('hidden'), 600);
+  // Complete the loading bar
+  const loadingBar = document.getElementById('loading-bar');
+  if (loadingBar) {
+    loadingBar.style.transition = 'width 300ms ease';
+    loadingBar.style.width = '100%';
+  }
+
+  // Delay fade so user sees the completed bar
+  setTimeout(() => {
+    el.classList.add('fade-out');
+    el.addEventListener('transitionend', () => el.classList.add('hidden'), { once: true });
+    setTimeout(() => el.classList.add('hidden'), 800);
+  }, 500);
 }
 
 function showErrorOverlay() {
