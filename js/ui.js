@@ -373,7 +373,8 @@ function showStreetSearch(state) {
     ),
   ).sort((a, b) => a.localeCompare(b, 'de'));
 
-  // Clear card and rebuild with safe DOM construction
+  // Ensure card is visible and rebuild with safe DOM construction
+  card.classList.remove('hidden');
   clearChildren(card);
   card.style.position = 'relative';
 
@@ -453,9 +454,21 @@ function showStreetSearch(state) {
  * @param {object} state
  */
 function handleFindMyTree(state) {
+  const card = document.getElementById('find-my-tree');
+  const fab = document.getElementById('find-my-tree-fab');
+
   if (!navigator.geolocation) {
     showStreetSearch(state);
     return;
+  }
+
+  // Show loading feedback while waiting for geolocation
+  const btn = card ? card.querySelector('#btn-find-tree') : null;
+  if (btn) {
+    const heading = btn.querySelector('.find-tree-heading');
+    if (heading) heading.textContent = 'Standort wird gesucht…';
+    const sub = btn.querySelector('.find-tree-sub');
+    if (sub) sub.textContent = '';
   }
 
   navigator.geolocation.getCurrentPosition(
@@ -469,9 +482,7 @@ function handleFindMyTree(state) {
         pulseTree(state.map, nearest);
       }
 
-      const card = document.getElementById('find-my-tree');
       if (card) card.classList.add('hidden');
-      const fab = document.getElementById('find-my-tree-fab');
       if (fab) fab.classList.remove('hidden');
     },
     (_err) => {
