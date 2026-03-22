@@ -813,3 +813,31 @@ body.filter-visible #map {
 /* Toast */
 .toast { position: fixed; bottom: 24px; left: 50%; transform: translateX(-50%) translateY(20px); background: #333; color: white; padding: 10px 24px; border-radius: 24px; font-size: 14px; font-family: var(--font); z-index: 100; opacity: 0; transition: opacity 0.3s, transform 0.3s; pointer-events: none; }
 .toast-visible { opacity: 1; transform: translateX(-50%) translateY(0); }
+
+/* === Animations === */
+@keyframes fadeInUp {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.floating-card { animation: fadeInUp 0.5s ease-out 1s both; }
+
+/* === Smooth scrollbar for panels === */
+.stories-panel::-webkit-scrollbar, .detail-card::-webkit-scrollbar { width: 4px; }
+.stories-panel::-webkit-scrollbar-thumb, .detail-card::-webkit-scrollbar-thumb {
+  background: #ddd; border-radius: 2px;
+}
+
+/* === Print-friendly === */
+@media print { #top-nav, .floating-card, .fab, #filter-bar { display: none; } }
+
+/* === Hover states for desktop only === */
+@media (hover: hover) {
+  .story-card:hover { background: #fafafa; box-shadow: 0 2px 8px var(--color-shadow); }
+}
+
+/* === Small mobile (< 375px) === */
+@media (max-width: 375px) {
+  .nav-logo { font-size: 15px; }
+  .nav-btn { padding: 4px 8px; font-size: 12px; }
+}
