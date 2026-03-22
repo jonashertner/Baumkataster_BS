@@ -758,3 +758,27 @@ body.filter-visible #map {
   background: #ef5350;
   color: white;
 }
+
+/* Stories Panel Contents */
+.stories-header { display: flex; align-items: center; justify-content: space-between; padding: 20px 24px; border-bottom: 1px solid var(--color-border); }
+.stories-title { font-size: 18px; font-weight: 700; }
+.stories-close { background: none; border: none; font-size: 22px; color: #999; cursor: pointer; }
+.stories-container { padding: 16px 24px; }
+.story-card { padding: 20px; margin-bottom: 12px; border-radius: var(--radius-md); border: 1px solid var(--color-border); cursor: pointer; transition: background 0.15s, box-shadow 0.15s; }
+.story-card:hover { background: #fafafa; box-shadow: 0 2px 8px var(--color-shadow); }
+.story-title { font-size: 16px; font-weight: 700; margin-bottom: 8px; }
+.story-body { font-size: 14px; color: var(--color-text-secondary); line-height: 1.5; }
+
+/* Growth Timeline */
+.growth-timeline { margin-top: 16px; display: flex; flex-direction: column; gap: 4px; }
+.decade-step { display: flex; justify-content: space-between; align-items: center; padding: 8px 12px; border-radius: var(--radius-sm); background: #f9f9f9; transition: background 0.3s, transform 0.3s; }
+.decade-step.decade-active { background: #E8F5E9; transform: scale(1.02); }
+.decade-label { font-size: 14px; font-weight: 600; }
+.decade-count { font-size: 13px; color: var(--color-text-secondary); }
+
+/* Comparison Grid */
+.comparison-grid { display: flex; align-items: center; gap: 16px; margin-top: 16px; }
+.comparison-side { flex: 1; text-align: center; }
+.comparison-side h4 { font-size: 15px; font-weight: 700; margin-bottom: 8px; }
+.comp-stat { font-size: 14px; color: var(--color-text-secondary); margin-bottom: 4px; }
+.comparison-divider { font-size: 14px; font-weight: 600; color: #bbb; }
