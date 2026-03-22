@@ -35,7 +35,9 @@ function initMap() {
 
   const map = new mapboxgl.Map({
     container:            'map',
-    style:                'mapbox://styles/mapbox/light-v11',
+    style:                window.matchMedia('(prefers-color-scheme: dark)').matches
+                            ? 'mapbox://styles/mapbox/dark-v11'
+                            : 'mapbox://styles/mapbox/light-v11',
     center:               MAP_CENTER,
     zoom:                 MAP_ZOOM,
     maxBounds:            MAP_BOUNDS,
