@@ -540,6 +540,20 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   color: var(--c-text-2);
 }
 
+/* Historical fact */
+.detail-history {
+  padding: 0 24px 16px;
+}
+
+.detail-history-text {
+  font-size: 13px; line-height: 1.65;
+  color: var(--c-text-2); font-style: italic;
+  padding: 10px 14px;
+  background: var(--c-bg-subtle);
+  border-radius: var(--r-sm);
+  border-left: 3px solid var(--c-border);
+}
+
 .btn-share {
   display: block; width: calc(100% - 48px);
   margin: 4px 24px 24px; padding: 10px 16px;

@@ -4,7 +4,7 @@
 
 import { t } from './i18n.js';
 import { findNearestTree, getSpeciesColor } from './trees.js';
-import { getSpeciesInfo, computeTreeContext } from './species-info.js';
+import { getSpeciesInfo, computeTreeContext, getHistoricalFact } from './species-info.js';
 
 // ── Internal references ──────────────────────────────────────
 let _popup = null; // Mapbox Popup instance (tooltip)
@@ -235,6 +235,31 @@ export function showTreeDetail(state, feature) {
     }
 
     panel.appendChild(contextWrap);
+  }
+
+  // ── Historical Basel fact ───────────────────────────────────
+  if (_plantingYear) {
+    const histFact = getHistoricalFact(_plantingYear, lang);
+    if (histFact) {
+      const histWrap = document.createElement('div');
+      histWrap.className = 'detail-history';
+
+      const histTitle = document.createElement('div');
+      histTitle.className = 'detail-context-section-title';
+      histTitle.textContent = lang === 'de'
+        ? 'Basel ' + _plantingYear
+        : 'Basel ' + _plantingYear;
+      histWrap.appendChild(histTitle);
+
+      const histText = document.createElement('div');
+      histText.className = 'detail-history-text';
+      histText.textContent = lang === 'de'
+        ? 'Als dieser Baum gepflanzt wurde: ' + histFact
+        : 'When this tree was planted: ' + histFact;
+      histWrap.appendChild(histText);
+
+      panel.appendChild(histWrap);
+    }
   }
 
   // ── Share button ──────────────────────────────────────────
