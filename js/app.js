@@ -244,19 +244,16 @@ function hideLoadingOverlay() {
   const el = document.getElementById('loading-overlay');
   if (!el) return;
 
-  // Complete the loading bar
-  const loadingBar = document.getElementById('loading-bar');
-  if (loadingBar) {
-    loadingBar.style.transition = 'width 300ms ease';
-    loadingBar.style.width = '100%';
-  }
+  // Snap counter to final value
+  const counterEl = document.getElementById('loading-counter');
+  if (counterEl) counterEl.textContent = '32\u2019325';
 
-  // Delay fade so user sees the completed bar
+  // Brief pause so user registers the final count, then fade
   setTimeout(() => {
     el.classList.add('fade-out');
     el.addEventListener('transitionend', () => el.classList.add('hidden'), { once: true });
-    setTimeout(() => el.classList.add('hidden'), 800);
-  }, 500);
+    setTimeout(() => el.classList.add('hidden'), 1200);
+  }, 600);
 }
 
 function showErrorOverlay() {
@@ -342,9 +339,8 @@ function animateLoading() {
   if (!dotsContainer || !counterEl) return;
 
   const TARGET = 32325;
-  const DOT_COUNT = 250;
-  const DURATION = 5000;
-  const INTERVAL = DURATION / DOT_COUNT;
+  const DOT_COUNT = 300;
+  const INTERVAL = 16; // ~60fps, place dots every frame
 
   // Pre-generate random positions roughly inside Basel boundary
   // Basel shape is roughly centered in the container, ~80% of area
@@ -362,8 +358,9 @@ function animateLoading() {
   const greens = ['#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32'];
 
   const timer = setInterval(() => {
-    // Place 3-5 dots per tick for denser feel
-    const batch = Math.min(3 + Math.floor(Math.random() * 3), DOT_COUNT - placed);
+    // Place 2-4 dots per frame — accelerating
+    const accel = 1 + Math.floor(placed / DOT_COUNT * 3);
+    const batch = Math.min(accel + Math.floor(Math.random() * 2), DOT_COUNT - placed);
     for (let i = 0; i < batch && placed < DOT_COUNT; i++) {
       const pos = positions[placed];
       const dot = document.createElement('div');
