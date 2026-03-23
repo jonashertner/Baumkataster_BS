@@ -376,21 +376,16 @@ function showStreetSearch(state) {
   // Ensure card is visible and rebuild with safe DOM construction
   card.classList.remove('hidden');
   clearChildren(card);
-  card.style.position = 'relative';
 
   const closeBtn = document.createElement('button');
   closeBtn.id = 'find-my-tree-close';
-  closeBtn.className = 'detail-close';
+  closeBtn.className = 'card-close';
   closeBtn.setAttribute('aria-label', 'Schliessen');
   closeBtn.textContent = '×';
-  closeBtn.style.position = 'absolute';
-  closeBtn.style.top = '8px';
-  closeBtn.style.right = '10px';
   card.appendChild(closeBtn);
 
   const wrap = document.createElement('div');
-  wrap.style.padding = '14px 16px 12px';
-  wrap.style.minWidth = '260px';
+  wrap.style.padding = '16px 20px';
 
   const input = document.createElement('input');
   input.type = 'text';
@@ -463,12 +458,11 @@ function handleFindMyTree(state) {
   }
 
   // Show loading feedback while waiting for geolocation
-  const btn = card ? card.querySelector('#btn-find-tree') : null;
-  if (btn) {
-    const heading = btn.querySelector('.find-tree-heading');
+  if (card) {
+    const heading = card.querySelector('.find-tree-heading');
     if (heading) heading.textContent = 'Standort wird gesucht…';
-    const sub = btn.querySelector('.find-tree-sub');
-    if (sub) sub.textContent = '';
+    const sub = card.querySelector('.find-tree-sub');
+    if (sub) sub.style.display = 'none';
   }
 
   navigator.geolocation.getCurrentPosition(
