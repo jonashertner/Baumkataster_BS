@@ -357,10 +357,9 @@ function animateLoading() {
   let counterValue = 0;
 
   function addDot() {
-    const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * 0.42;
-    const x = 0.5 + Math.cos(angle) * radius;
-    const y = 0.5 + Math.sin(angle) * radius * 0.9;
+    // Scatter across entire viewport with slight center bias
+    const x = 0.05 + Math.random() * 0.9;
+    const y = 0.05 + Math.random() * 0.9;
 
     const dot = document.createElement('div');
     dot.className = 'tree-dot';
