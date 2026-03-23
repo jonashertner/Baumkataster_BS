@@ -240,9 +240,9 @@ function showLoadingOverlay() {
   }
 }
 
-// Track when loading started so we enforce a minimum display time
+// Minimum display time so the animation is visible even on fast connections
 const _loadingStart = performance.now();
-const MIN_LOADING_MS = 3500; // show animation for at least 3.5s
+const MIN_LOADING_MS = 2500;
 
 function hideLoadingOverlay() {
   const el = document.getElementById('loading-overlay');
@@ -251,16 +251,16 @@ function hideLoadingOverlay() {
   const elapsed = performance.now() - _loadingStart;
   const remaining = Math.max(0, MIN_LOADING_MS - elapsed);
 
-  // Wait for minimum display time, then snap counter and fade
   setTimeout(() => {
-    const counterEl = document.getElementById('loading-counter');
-    if (counterEl) counterEl.textContent = '32\u2019325';
+    // Snap counter to final value and stop animation
+    stopLoadingAnimation();
 
+    // Brief pause to show "32'325", then fade out
     setTimeout(() => {
       el.classList.add('fade-out');
       el.addEventListener('transitionend', () => el.classList.add('hidden'), { once: true });
       setTimeout(() => el.classList.add('hidden'), 1200);
-    }, 500);
+    }, 600);
   }, remaining);
 }
 
@@ -341,61 +341,69 @@ async function init() {
 }
 
 // ── Loading animation: Basel map fills with tree dots ────────
+// Runs continuously until stopLoadingAnimation() is called.
+let _loadingAnimStopped = false;
+let _loadingAnimTimer = null;
+
 function animateLoading() {
   const dotsContainer = document.getElementById('loading-dots');
   const counterEl = document.getElementById('loading-counter');
   if (!dotsContainer || !counterEl) return;
 
+  _loadingAnimStopped = false;
   const TARGET = 32325;
-  const DOT_COUNT = 300;
-  const INTERVAL = 16; // ~60fps, place dots every frame
+  const greens = ['#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32'];
+  let placed = 0;
+  let counterValue = 0;
 
-  // Pre-generate random positions roughly inside Basel boundary
-  // Basel shape is roughly centered in the container, ~80% of area
-  const positions = [];
-  for (let i = 0; i < DOT_COUNT; i++) {
-    // Polar distribution from center for organic spread
+  function addDot() {
     const angle = Math.random() * Math.PI * 2;
-    const radius = Math.sqrt(Math.random()) * 0.42; // sqrt for uniform area distribution
-    const cx = 0.5 + Math.cos(angle) * radius;
-    const cy = 0.5 + Math.sin(angle) * radius * 0.9; // slightly squashed vertically
-    positions.push({ x: cx, y: cy });
+    const radius = Math.sqrt(Math.random()) * 0.42;
+    const x = 0.5 + Math.cos(angle) * radius;
+    const y = 0.5 + Math.sin(angle) * radius * 0.9;
+
+    const dot = document.createElement('div');
+    dot.className = 'tree-dot';
+    dot.style.left = (x * 100) + '%';
+    dot.style.top = (y * 100) + '%';
+    dot.style.backgroundColor = greens[Math.floor(Math.random() * greens.length)];
+    const size = 3 + Math.random() * 4;
+    dot.style.width = size + 'px';
+    dot.style.height = size + 'px';
+
+    // Recycle old dots after 600 to avoid DOM bloat
+    if (dotsContainer.childElementCount > 600) {
+      dotsContainer.removeChild(dotsContainer.firstElementChild);
+    }
+    dotsContainer.appendChild(dot);
+    placed++;
   }
 
-  let placed = 0;
-  const greens = ['#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32'];
-
-  const timer = setInterval(() => {
-    // Place 2-4 dots per frame — accelerating
-    const accel = 1 + Math.floor(placed / DOT_COUNT * 3);
-    const batch = Math.min(accel + Math.floor(Math.random() * 2), DOT_COUNT - placed);
-    for (let i = 0; i < batch && placed < DOT_COUNT; i++) {
-      const pos = positions[placed];
-      const dot = document.createElement('div');
-      dot.className = 'tree-dot';
-      dot.style.left = (pos.x * 100) + '%';
-      dot.style.top = (pos.y * 100) + '%';
-      dot.style.backgroundColor = greens[Math.floor(Math.random() * greens.length)];
-      const size = 3 + Math.random() * 4;
-      dot.style.width = size + 'px';
-      dot.style.height = size + 'px';
-      dotsContainer.appendChild(dot);
-      placed++;
+  _loadingAnimTimer = setInterval(() => {
+    if (_loadingAnimStopped) {
+      clearInterval(_loadingAnimTimer);
+      return;
     }
 
-    // Update counter proportionally
-    const progress = placed / DOT_COUNT;
-    const eased = 1 - Math.pow(1 - progress, 2);
-    counterEl.textContent = Math.round(eased * TARGET).toLocaleString('de-CH');
+    // Add 2-4 dots per frame
+    const batch = 2 + Math.floor(Math.random() * 3);
+    for (let i = 0; i < batch; i++) addDot();
 
-    if (placed >= DOT_COUNT) {
-      clearInterval(timer);
-      counterEl.textContent = TARGET.toLocaleString('de-CH');
-      // Show pulsing state to indicate still loading
-      const textBlock = document.querySelector('.loading-text-block');
-      if (textBlock) textBlock.classList.add('waiting');
-    }
-  }, INTERVAL);
+    // Counter: advance toward TARGET but never exceed it
+    // Moves fast initially, slows as it approaches (never reaches 100% until stopped)
+    const maxProgress = 0.92; // cap at 92% until data actually loads
+    const t = Math.min(placed / 400, maxProgress); // ~400 dots ≈ 92%
+    const eased = 1 - Math.pow(1 - t, 2);
+    counterValue = Math.round(eased * TARGET);
+    counterEl.textContent = counterValue.toLocaleString('de-CH');
+  }, 30);
+}
+
+function stopLoadingAnimation() {
+  _loadingAnimStopped = true;
+  if (_loadingAnimTimer) clearInterval(_loadingAnimTimer);
+  const counterEl = document.getElementById('loading-counter');
+  if (counterEl) counterEl.textContent = '32\u2019325';
 }
 
 // ── Boot ─────────────────────────────────────────────────────
