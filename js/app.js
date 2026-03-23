@@ -240,20 +240,28 @@ function showLoadingOverlay() {
   }
 }
 
+// Track when loading started so we enforce a minimum display time
+const _loadingStart = performance.now();
+const MIN_LOADING_MS = 3500; // show animation for at least 3.5s
+
 function hideLoadingOverlay() {
   const el = document.getElementById('loading-overlay');
   if (!el) return;
 
-  // Snap counter to final value
-  const counterEl = document.getElementById('loading-counter');
-  if (counterEl) counterEl.textContent = '32\u2019325';
+  const elapsed = performance.now() - _loadingStart;
+  const remaining = Math.max(0, MIN_LOADING_MS - elapsed);
 
-  // Brief pause so user registers the final count, then fade
+  // Wait for minimum display time, then snap counter and fade
   setTimeout(() => {
-    el.classList.add('fade-out');
-    el.addEventListener('transitionend', () => el.classList.add('hidden'), { once: true });
-    setTimeout(() => el.classList.add('hidden'), 1200);
-  }, 600);
+    const counterEl = document.getElementById('loading-counter');
+    if (counterEl) counterEl.textContent = '32\u2019325';
+
+    setTimeout(() => {
+      el.classList.add('fade-out');
+      el.addEventListener('transitionend', () => el.classList.add('hidden'), { once: true });
+      setTimeout(() => el.classList.add('hidden'), 1200);
+    }, 500);
+  }, remaining);
 }
 
 function showErrorOverlay() {
