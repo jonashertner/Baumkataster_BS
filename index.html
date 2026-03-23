@@ -119,24 +119,47 @@
   <!-- ── Loading overlay ──────────────────────────────────── -->
   <div id="loading-overlay" role="status" aria-live="polite">
     <div class="loading-inner">
-      <!-- Animated tree that grows and blooms -->
-      <div class="loading-tree" aria-hidden="true">
-        <div class="tree-trunk"></div>
-        <div class="tree-canopy">
-          <div class="canopy-circle c1"></div>
-          <div class="canopy-circle c2"></div>
-          <div class="canopy-circle c3"></div>
-          <div class="canopy-circle c4"></div>
-          <div class="canopy-circle c5"></div>
-        </div>
-        <!-- Floating leaf particles -->
-        <div class="leaf-particle lp1"></div>
-        <div class="leaf-particle lp2"></div>
-        <div class="leaf-particle lp3"></div>
-        <div class="leaf-particle lp4"></div>
-        <div class="leaf-particle lp5"></div>
-        <div class="leaf-particle lp6"></div>
-      </div>
+      <!-- Self-drawing tree SVG -->
+      <svg class="loading-tree-svg" viewBox="0 0 200 240" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+        <defs>
+          <linearGradient id="canopyGrad" x1="100" y1="0" x2="100" y2="160" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#81C784"/>
+            <stop offset="50%" stop-color="#4CAF50"/>
+            <stop offset="100%" stop-color="#2E7D32"/>
+          </linearGradient>
+          <linearGradient id="trunkGrad" x1="100" y1="140" x2="100" y2="230" gradientUnits="userSpaceOnUse">
+            <stop offset="0%" stop-color="#8D6E63"/>
+            <stop offset="100%" stop-color="#5D4037"/>
+          </linearGradient>
+          <filter id="glow">
+            <feGaussianBlur stdDeviation="4" result="blur"/>
+            <feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge>
+          </filter>
+        </defs>
+        <!-- Trunk — draws itself -->
+        <path class="draw-trunk" d="M100 230 L100 148 Q98 142 94 138" stroke="url(#trunkGrad)" stroke-width="6" stroke-linecap="round"/>
+        <path class="draw-trunk trunk-r" d="M100 165 Q102 158 108 152" stroke="url(#trunkGrad)" stroke-width="3.5" stroke-linecap="round"/>
+        <!-- Canopy outline — draws itself, then fills -->
+        <path class="draw-canopy" d="
+          M100 12
+          C 68 12, 28 38, 28 72
+          C 28 88, 36 102, 48 112
+          C 32 118, 24 130, 30 144
+          C 36 156, 52 158, 62 152
+          C 70 162, 86 168, 100 168
+          C 114 168, 130 162, 138 152
+          C 148 158, 164 156, 170 144
+          C 176 130, 168 118, 152 112
+          C 164 102, 172 88, 172 72
+          C 172 38, 132 12, 100 12 Z
+        " stroke="url(#canopyGrad)" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" filter="url(#glow)"/>
+        <!-- Leaf vein details — appear after fill -->
+        <path class="draw-vein v1" d="M100 148 Q96 120 80 100" stroke="#2E7D32" stroke-width="0.8" opacity="0"/>
+        <path class="draw-vein v2" d="M100 148 Q106 115 125 95" stroke="#2E7D32" stroke-width="0.8" opacity="0"/>
+        <path class="draw-vein v3" d="M100 148 Q100 100 100 60" stroke="#2E7D32" stroke-width="0.8" opacity="0"/>
+        <path class="draw-vein v4" d="M82 105 Q70 85 55 80" stroke="#2E7D32" stroke-width="0.6" opacity="0"/>
+        <path class="draw-vein v5" d="M118 100 Q132 82 148 78" stroke="#2E7D32" stroke-width="0.6" opacity="0"/>
+      </svg>
       <div class="loading-text-group">
         <p class="loading-title">Mein Baum Basel</p>
         <p class="loading-subtitle" data-i18n="loading.text">32'325 Bäume werden geladen…</p>
