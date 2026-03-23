@@ -375,6 +375,8 @@ function showStreetSearch(state) {
 
   // Ensure card is visible and rebuild with safe DOM construction
   card.classList.remove('hidden');
+  card.style.animation = 'none';
+  card.style.opacity = '1';
   clearChildren(card);
 
   const closeBtn = document.createElement('button');
@@ -386,6 +388,7 @@ function showStreetSearch(state) {
 
   const wrap = document.createElement('div');
   wrap.style.padding = '16px 20px';
+  wrap.style.minWidth = '280px';
 
   const input = document.createElement('input');
   input.type = 'text';
