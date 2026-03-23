@@ -391,6 +391,9 @@ function animateLoading() {
     if (placed >= DOT_COUNT) {
       clearInterval(timer);
       counterEl.textContent = TARGET.toLocaleString('de-CH');
+      // Show pulsing state to indicate still loading
+      const textBlock = document.querySelector('.loading-text-block');
+      if (textBlock) textBlock.classList.add('waiting');
     }
   }, INTERVAL);
 }

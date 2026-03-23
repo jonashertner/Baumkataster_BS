@@ -87,6 +87,9 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   border-bottom: 1px solid var(--c-divider);
 }
 
+/* Nav fades in after loading */
+#top-nav { transition: opacity 0.5s ease; }
+
 .nav-left { display: flex; align-items: center; gap: 8px; }
 .nav-logo-icon { display: flex; align-items: center; }
 .nav-logo-text { font-size: 16px; font-weight: 700; letter-spacing: -0.03em; }
@@ -323,6 +326,16 @@ button { font-family: inherit; cursor: pointer; border: none; background: none; 
   letter-spacing: 0.01em;
   opacity: 0;
   animation: fadeIn 0.6s ease 0.5s forwards;
+}
+
+/* Pulse after dot animation completes to show still loading */
+.loading-text-block.waiting .loading-counter {
+  animation: counterPulse 2s ease-in-out infinite;
+}
+
+@keyframes counterPulse {
+  0%, 100% { opacity: 1; }
+  50%      { opacity: 0.5; }
 }
 
 /* ── Mobile adjustments ────────────────────────────────────── */
