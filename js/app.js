@@ -335,30 +335,65 @@ async function init() {
   }
 }
 
-// ── Loading counter animation ────────────────────────────────
-function animateCounter() {
-  const el = document.getElementById('loading-counter');
-  if (!el) return;
-  const TARGET = 32325;
-  const DURATION = 3000;
-  const start = performance.now();
+// ── Loading animation: Basel map fills with tree dots ────────
+function animateLoading() {
+  const dotsContainer = document.getElementById('loading-dots');
+  const counterEl = document.getElementById('loading-counter');
+  if (!dotsContainer || !counterEl) return;
 
-  function tick(now) {
-    const elapsed = now - start;
-    const progress = Math.min(elapsed / DURATION, 1);
-    // Ease-out cubic for satisfying deceleration
-    const eased = 1 - Math.pow(1 - progress, 3);
-    const value = Math.round(eased * TARGET);
-    el.textContent = value.toLocaleString('de-CH');
-    if (progress < 1) requestAnimationFrame(tick);
+  const TARGET = 32325;
+  const DOT_COUNT = 250;
+  const DURATION = 5000;
+  const INTERVAL = DURATION / DOT_COUNT;
+
+  // Pre-generate random positions roughly inside Basel boundary
+  // Basel shape is roughly centered in the container, ~80% of area
+  const positions = [];
+  for (let i = 0; i < DOT_COUNT; i++) {
+    // Polar distribution from center for organic spread
+    const angle = Math.random() * Math.PI * 2;
+    const radius = Math.sqrt(Math.random()) * 0.42; // sqrt for uniform area distribution
+    const cx = 0.5 + Math.cos(angle) * radius;
+    const cy = 0.5 + Math.sin(angle) * radius * 0.9; // slightly squashed vertically
+    positions.push({ x: cx, y: cy });
   }
-  requestAnimationFrame(tick);
+
+  let placed = 0;
+  const greens = ['#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32'];
+
+  const timer = setInterval(() => {
+    // Place 3-5 dots per tick for denser feel
+    const batch = Math.min(3 + Math.floor(Math.random() * 3), DOT_COUNT - placed);
+    for (let i = 0; i < batch && placed < DOT_COUNT; i++) {
+      const pos = positions[placed];
+      const dot = document.createElement('div');
+      dot.className = 'tree-dot';
+      dot.style.left = (pos.x * 100) + '%';
+      dot.style.top = (pos.y * 100) + '%';
+      dot.style.backgroundColor = greens[Math.floor(Math.random() * greens.length)];
+      const size = 3 + Math.random() * 4;
+      dot.style.width = size + 'px';
+      dot.style.height = size + 'px';
+      dotsContainer.appendChild(dot);
+      placed++;
+    }
+
+    // Update counter proportionally
+    const progress = placed / DOT_COUNT;
+    const eased = 1 - Math.pow(1 - progress, 2);
+    counterEl.textContent = Math.round(eased * TARGET).toLocaleString('de-CH');
+
+    if (placed >= DOT_COUNT) {
+      clearInterval(timer);
+      counterEl.textContent = TARGET.toLocaleString('de-CH');
+    }
+  }, INTERVAL);
 }
 
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Start counter immediately
-  animateCounter();
+  // Start loading animation
+  animateLoading();
 
   const retryBtn = document.getElementById('btn-retry');
   if (retryBtn) {

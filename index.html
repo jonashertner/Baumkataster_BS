@@ -118,29 +118,34 @@
 
   <!-- ── Loading overlay ──────────────────────────────────── -->
   <div id="loading-overlay" role="status" aria-live="polite">
-    <!-- Orbiting dots -->
-    <div class="orbit-ring" aria-hidden="true">
-      <div class="orbit-dot od1"></div>
-      <div class="orbit-dot od2"></div>
-      <div class="orbit-dot od3"></div>
-      <div class="orbit-dot od4"></div>
-      <div class="orbit-dot od5"></div>
-      <div class="orbit-dot od6"></div>
-      <div class="orbit-dot od7"></div>
-      <div class="orbit-dot od8"></div>
-    </div>
-    <div class="orbit-ring ring-2" aria-hidden="true">
-      <div class="orbit-dot od-s1"></div>
-      <div class="orbit-dot od-s2"></div>
-      <div class="orbit-dot od-s3"></div>
-      <div class="orbit-dot od-s4"></div>
-      <div class="orbit-dot od-s5"></div>
-    </div>
     <div class="loading-inner">
-      <div class="loading-counter" id="loading-counter" aria-hidden="true">0</div>
-      <div class="loading-label">Bäume in Basel</div>
-      <div class="loading-bar-track">
-        <div class="loading-bar-fill" id="loading-bar"></div>
+      <!-- Basel map with tree dots -->
+      <div class="loading-map" aria-hidden="true">
+        <svg class="basel-outline" viewBox="0 0 340 320" fill="none" xmlns="http://www.w3.org/2000/svg">
+          <!-- Simplified Basel-Stadt cantonal boundary -->
+          <path class="basel-border" d="
+            M170 8 C190 8 225 18 248 35 C268 50 285 68 295 90
+            C305 112 310 135 308 158 C306 175 298 192 288 205
+            C278 218 265 228 252 238 C240 247 228 255 218 266
+            C208 277 200 290 188 298 C175 307 158 312 140 310
+            C122 308 108 298 95 286 C82 274 72 260 60 245
+            C48 230 38 212 32 192 C26 172 24 150 28 130
+            C32 110 42 92 56 76 C70 60 88 48 108 38
+            C128 28 150 8 170 8 Z
+          " stroke="var(--c-border)" stroke-width="1.5" fill="none" opacity="0.4"/>
+          <!-- Rhine river -->
+          <path class="basel-rhine" d="
+            M308 155 C295 160 275 162 258 168 C240 174 225 182 210 188
+            C195 194 180 198 165 195 C150 192 138 184 125 178
+            C112 172 98 168 82 170 C66 172 48 180 32 190
+          " stroke="var(--c-border)" stroke-width="2.5" fill="none" opacity="0.15" stroke-linecap="round"/>
+        </svg>
+        <!-- Tree dots get inserted here by JS -->
+        <div class="loading-dots" id="loading-dots"></div>
+      </div>
+      <div class="loading-text-block">
+        <div class="loading-counter" id="loading-counter">0</div>
+        <div class="loading-label">Bäume in Basel</div>
       </div>
     </div>
   </div>
