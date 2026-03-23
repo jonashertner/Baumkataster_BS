@@ -4,6 +4,7 @@
 
 import { t } from './i18n.js';
 import { findNearestTree, getSpeciesColor } from './trees.js';
+import { getSpeciesInfo, computeTreeContext } from './species-info.js';
 
 // ── Internal references ──────────────────────────────────────
 let _popup = null; // Mapbox Popup instance (tooltip)
@@ -137,6 +138,74 @@ export function showTreeDetail(state, feature) {
   infoWrap.appendChild(locRow);
 
   panel.appendChild(infoWrap);
+
+  // ── Species context ─────────────────────────────────────────
+  const speciesInfo = getSpeciesInfo(baumart_deutsch);
+  const treeContext = computeTreeContext(state, feature);
+  const lang = window.__meinBaumLang || 'de';
+
+  if (speciesInfo || treeContext) {
+    const contextWrap = document.createElement('div');
+    contextWrap.className = 'detail-context';
+
+    // Species count in Basel
+    if (treeContext?.speciesCount) {
+      const countEl = document.createElement('div');
+      countEl.className = 'detail-context-stat';
+      const num = treeContext.speciesCount.toLocaleString('de-CH');
+      if (treeContext.rarity === 'unique') {
+        countEl.textContent = lang === 'de'
+          ? `Einer von nur ${num} in Basel — extrem selten!`
+          : `One of only ${num} in Basel — extremely rare!`;
+      } else if (treeContext.rarity === 'rare') {
+        countEl.textContent = lang === 'de'
+          ? `Nur ${num} Exemplare in Basel — selten`
+          : `Only ${num} specimens in Basel — rare`;
+      } else {
+        countEl.textContent = lang === 'de'
+          ? `${num} ${baumart_deutsch} in Basel`
+          : `${num} ${baumart_deutsch} in Basel`;
+      }
+      contextWrap.appendChild(countEl);
+    }
+
+    // Age percentile
+    if (treeContext?.agePercentile != null) {
+      const pctEl = document.createElement('div');
+      pctEl.className = 'detail-context-stat';
+      if (treeContext.agePercentile >= 90) {
+        pctEl.textContent = lang === 'de'
+          ? `Älter als ${treeContext.agePercentile}% aller Bäume in Basel`
+          : `Older than ${treeContext.agePercentile}% of all trees in Basel`;
+      } else if (treeContext.agePercentile >= 50) {
+        pctEl.textContent = lang === 'de'
+          ? `Älter als ${treeContext.agePercentile}% der Basler Bäume`
+          : `Older than ${treeContext.agePercentile}% of Basel's trees`;
+      }
+      if (pctEl.textContent) contextWrap.appendChild(pctEl);
+    }
+
+    // Species family + origin
+    if (speciesInfo?.family) {
+      const familyEl = document.createElement('div');
+      familyEl.className = 'detail-context-meta';
+      familyEl.textContent = speciesInfo.family;
+      if (speciesInfo.origin) {
+        familyEl.textContent += ' · ' + (lang === 'de' ? 'Herkunft: ' : 'Origin: ') + speciesInfo.origin;
+      }
+      contextWrap.appendChild(familyEl);
+    }
+
+    // Interesting fact
+    if (speciesInfo) {
+      const factEl = document.createElement('div');
+      factEl.className = 'detail-context-fact';
+      factEl.textContent = lang === 'de' ? speciesInfo.de : speciesInfo.en;
+      contextWrap.appendChild(factEl);
+    }
+
+    panel.appendChild(contextWrap);
+  }
 
   // ── Share button ──────────────────────────────────────────
   const shareBtn = document.createElement('button');
