@@ -389,12 +389,13 @@ function animateLoading() {
     const batch = 2 + Math.floor(Math.random() * 3);
     for (let i = 0; i < batch; i++) addDot();
 
-    // Counter: advance toward TARGET but never exceed it
-    // Moves fast initially, slows as it approaches (never reaches 100% until stopped)
-    const maxProgress = 0.92; // cap at 92% until data actually loads
-    const t = Math.min(placed / 400, maxProgress); // ~400 dots ≈ 92%
-    const eased = 1 - Math.pow(1 - t, 2);
-    counterValue = Math.round(eased * TARGET);
+    // Counter: time-based, logarithmic approach toward 92%
+    // Takes ~30s to reach 92%, so it never looks "done" before data loads
+    const elapsed = (performance.now() - _loadingStart) / 1000; // seconds
+    const maxProgress = 0.92;
+    // Logarithmic curve: fast initial climb, very slow crawl near the top
+    const t = Math.min(1 - 1 / (1 + elapsed * 0.15), maxProgress);
+    counterValue = Math.round(t * TARGET);
     counterEl.textContent = counterValue.toLocaleString('de-CH');
   }, 30);
 }
