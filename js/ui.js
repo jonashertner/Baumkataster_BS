@@ -204,6 +204,36 @@ export function showTreeDetail(state, feature) {
       contextWrap.appendChild(factEl);
     }
 
+    // Seasonal behaviour
+    if (speciesInfo?.seasons) {
+      const seasonEl = document.createElement('div');
+      seasonEl.className = 'detail-context-seasons';
+      const seasonTitle = document.createElement('div');
+      seasonTitle.className = 'detail-context-section-title';
+      seasonTitle.textContent = lang === 'de' ? 'Jahreszyklus' : 'Seasonal cycle';
+      seasonEl.appendChild(seasonTitle);
+      const seasonText = document.createElement('div');
+      seasonText.className = 'detail-context-season-text';
+      seasonText.textContent = lang === 'de' ? speciesInfo.seasons.de : speciesInfo.seasons.en;
+      seasonEl.appendChild(seasonText);
+      contextWrap.appendChild(seasonEl);
+    }
+
+    // Ecology — relevance for animals & humans
+    if (speciesInfo?.ecology) {
+      const ecoEl = document.createElement('div');
+      ecoEl.className = 'detail-context-ecology';
+      const ecoTitle = document.createElement('div');
+      ecoTitle.className = 'detail-context-section-title';
+      ecoTitle.textContent = lang === 'de' ? 'Mensch & Natur' : 'People & Nature';
+      ecoEl.appendChild(ecoTitle);
+      const ecoText = document.createElement('div');
+      ecoText.className = 'detail-context-eco-text';
+      ecoText.textContent = lang === 'de' ? speciesInfo.ecology.de : speciesInfo.ecology.en;
+      ecoEl.appendChild(ecoText);
+      contextWrap.appendChild(ecoEl);
+    }
+
     panel.appendChild(contextWrap);
   }
 
