@@ -139,8 +139,8 @@ function addTreeLayer() {
     source: 'trees',
     filter: ['has', 'point_count'],
     paint:  {
-      'circle-color':   '#4CAF50',
-      'circle-opacity': 0.7,
+      'circle-color':   '#5B9A3C',
+      'circle-opacity': 0.65,
       'circle-radius': [
         'step',
         ['get', 'point_count'],
@@ -188,14 +188,14 @@ function addTreeLayer() {
       'circle-color': [
         'coalesce',
         ['get', '_color'],
-        '#9E9E9E',
+        '#7A8B78',
       ],
-      'circle-opacity': 0.85,
-      // Stroke: thicker ring for protected trees
+      'circle-opacity': 0.88,
+      // Stroke: subtle ring for protected trees
       'circle-stroke-width': [
         'case',
         ['==', ['get', '_protected'], true],
-        1.5,
+        1.2,
         0,
       ],
       'circle-stroke-color': 'rgba(46, 125, 50, 0.5)',
@@ -352,7 +352,7 @@ function animateLoading() {
 
   _loadingAnimStopped = false;
   const TARGET = 32325;
-  const greens = ['#81C784', '#66BB6A', '#4CAF50', '#43A047', '#388E3C', '#2E7D32'];
+  const greens = ['#7BB563', '#5B9A3C', '#4A8B4A', '#6B8E4E', '#4A7C59', '#3D8B7A', '#C49A3C', '#D4783A', '#8B6834'];
   let placed = 0;
   let counterValue = 0;
 
