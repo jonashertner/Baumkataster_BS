@@ -335,9 +335,31 @@ async function init() {
   }
 }
 
+// ── Loading counter animation ────────────────────────────────
+function animateCounter() {
+  const el = document.getElementById('loading-counter');
+  if (!el) return;
+  const TARGET = 32325;
+  const DURATION = 3000;
+  const start = performance.now();
+
+  function tick(now) {
+    const elapsed = now - start;
+    const progress = Math.min(elapsed / DURATION, 1);
+    // Ease-out cubic for satisfying deceleration
+    const eased = 1 - Math.pow(1 - progress, 3);
+    const value = Math.round(eased * TARGET);
+    el.textContent = value.toLocaleString('de-CH');
+    if (progress < 1) requestAnimationFrame(tick);
+  }
+  requestAnimationFrame(tick);
+}
+
 // ── Boot ─────────────────────────────────────────────────────
 document.addEventListener('DOMContentLoaded', () => {
-  // Retry button — registered once, outside init()
+  // Start counter immediately
+  animateCounter();
+
   const retryBtn = document.getElementById('btn-retry');
   if (retryBtn) {
     retryBtn.addEventListener('click', () => {
