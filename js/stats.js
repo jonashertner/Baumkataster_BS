@@ -182,6 +182,8 @@ function renderStats(state) {
  * @returns {HTMLElement}
  */
 function buildSpeciesSection(features) {
+  const lang = window.__meinBaumLang || 'de';
+
   // Count by baumart_deutsch
   const counts = {};
   for (const f of features) {
@@ -191,10 +193,13 @@ function buildSpeciesSection(features) {
   }
 
   const sorted = Object.entries(counts).sort((a, b) => b[1] - a[1]);
-  const top10  = sorted.slice(0, 10);
-  const others = sorted.slice(10).reduce((sum, [, n]) => sum + n, 0);
 
-  const maxVal = top10.length > 0 ? top10[0][1] : 1;
+  // Show top 25 individually
+  const TOP_N = 25;
+  const shown = sorted.slice(0, TOP_N);
+  const rest  = sorted.slice(TOP_N);
+
+  const maxVal = shown.length > 0 ? shown[0][1] : 1;
 
   const section = document.createElement('div');
   section.className = 'stats-section';
@@ -203,16 +208,47 @@ function buildSpeciesSection(features) {
   h3.textContent = t('stats.species_title');
   section.appendChild(h3);
 
+  // Summary line
+  const summary = document.createElement('div');
+  summary.className = 'stats-species-summary';
+  summary.textContent = lang === 'de'
+    ? sorted.length + ' verschiedene Arten · Top 25 gezeigt'
+    : sorted.length + ' different species · Top 25 shown';
+  section.appendChild(summary);
+
   const chart = document.createElement('div');
   chart.className = 'bar-chart';
 
-  for (const [name, count] of top10) {
+  for (const [name, count] of shown) {
     chart.appendChild(makeBarRow(name, count, maxVal, false));
   }
 
-  if (others > 0) {
-    const andereName = window.__meinBaumLang === 'en' ? 'Other' : 'Andere';
-    chart.appendChild(makeBarRow(andereName, others, maxVal, true));
+  // Group remaining into tiers
+  if (rest.length > 0) {
+    const uncommon = rest.filter(([, c]) => c >= 10);
+    const rare     = rest.filter(([, c]) => c >= 2 && c < 10);
+    const unique   = rest.filter(([, c]) => c === 1);
+
+    if (uncommon.length > 0) {
+      const total = uncommon.reduce((s, [, c]) => s + c, 0);
+      const label = lang === 'de'
+        ? uncommon.length + ' weitere Arten (10–' + uncommon[0][1] + ' Ex.)'
+        : uncommon.length + ' more species (10–' + uncommon[0][1] + ' ea.)';
+      chart.appendChild(makeBarRow(label, total, maxVal, true));
+    }
+    if (rare.length > 0) {
+      const total = rare.reduce((s, [, c]) => s + c, 0);
+      const label = lang === 'de'
+        ? rare.length + ' seltene Arten (2–9 Ex.)'
+        : rare.length + ' rare species (2–9 ea.)';
+      chart.appendChild(makeBarRow(label, total, maxVal, true));
+    }
+    if (unique.length > 0) {
+      const label = lang === 'de'
+        ? unique.length + ' einzigartige Arten (je 1 Ex.)'
+        : unique.length + ' unique species (1 each)';
+      chart.appendChild(makeBarRow(label, unique.length, maxVal, true));
+    }
   }
 
   section.appendChild(chart);
