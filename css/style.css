@@ -10,20 +10,20 @@
   --c-green-100: #EBF3E6;
   --c-green-50:  #F4F8F2;
 
-  --c-bg:          #ffffff;
-  --c-bg-raised:   #ffffff;
-  --c-bg-subtle:   #f9fafb;
-  --c-bg-hover:    #f3f4f6;
-  --c-surface:     #ffffff;
-  --c-text:        #111827;
-  --c-text-2:      #4b5563;
-  --c-text-3:      #9ca3af;
-  --c-border:      #e5e7eb;
-  --c-border-light:#f1f3f5;
-  --c-divider:     rgba(0,0,0,0.06);
-  --c-glass:       rgba(255,255,255,0.82);
-  --c-glass-heavy: rgba(255,255,255,0.96);
-  --c-overlay:     rgba(255,255,255,0.92);
+  --c-bg:          #FAFAF7;
+  --c-bg-raised:   #FFFFFF;
+  --c-bg-subtle:   #F5F4F0;
+  --c-bg-hover:    #EFEEE9;
+  --c-surface:     #FFFFFF;
+  --c-text:        #1C2418;
+  --c-text-2:      #4A5244;
+  --c-text-3:      #8B9284;
+  --c-border:      #DDD9D0;
+  --c-border-light:#ECEAE4;
+  --c-divider:     rgba(60,50,30,0.07);
+  --c-glass:       rgba(250,250,247,0.82);
+  --c-glass-heavy: rgba(250,250,247,0.96);
+  --c-overlay:     rgba(250,250,247,0.92);
 
   --shadow-sm:    0 1px 2px rgba(0,0,0,0.05);
   --shadow-md:    0 4px 12px rgba(0,0,0,0.07);
@@ -44,13 +44,13 @@
 /* ── Dark Mode ─────────────────────────────────────────────── */
 @media (prefers-color-scheme: dark) {
   :root {
-    --c-bg: #0f1219; --c-bg-raised: #1a1f2e; --c-bg-subtle: #151a26;
-    --c-bg-hover: #242b3d; --c-surface: #1a1f2e;
-    --c-text: #f1f3f6; --c-text-2: #9ca3af; --c-text-3: #6b7280;
-    --c-border: #2d3548; --c-border-light: #232a3a;
-    --c-divider: rgba(255,255,255,0.06);
-    --c-glass: rgba(15,18,25,0.85); --c-glass-heavy: rgba(15,18,25,0.96);
-    --c-overlay: rgba(15,18,25,0.92);
+    --c-bg: #141612; --c-bg-raised: #1E201A; --c-bg-subtle: #1A1C16;
+    --c-bg-hover: #282A22; --c-surface: #1E201A;
+    --c-text: #EDEEE8; --c-text-2: #9CA394; --c-text-3: #6B7264;
+    --c-border: #2E3028; --c-border-light: #252720;
+    --c-divider: rgba(255,250,230,0.06);
+    --c-glass: rgba(20,22,18,0.85); --c-glass-heavy: rgba(20,22,18,0.96);
+    --c-overlay: rgba(20,22,18,0.92);
     --shadow-sm: 0 1px 2px rgba(0,0,0,0.4);
     --shadow-md: 0 4px 12px rgba(0,0,0,0.4);
     --shadow-lg: 0 8px 28px rgba(0,0,0,0.5);
