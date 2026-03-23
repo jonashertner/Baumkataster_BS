@@ -578,16 +578,17 @@ function showStreetSearch(state) {
 function handleFindMyTree(state) {
   const card = document.getElementById('find-my-tree');
   const fab = document.getElementById('find-my-tree-fab');
+  const lang = window.__meinBaumLang || 'de';
 
   if (!navigator.geolocation) {
     showStreetSearch(state);
     return;
   }
 
-  // Show loading feedback while waiting for geolocation
+  // Show loading feedback
   if (card) {
     const heading = card.querySelector('.find-tree-heading');
-    if (heading) heading.textContent = 'Standort wird gesucht…';
+    if (heading) heading.textContent = lang === 'de' ? 'Standort wird gesucht…' : 'Finding your location…';
     const sub = card.querySelector('.find-tree-sub');
     if (sub) sub.style.display = 'none';
   }
@@ -606,11 +607,102 @@ function handleFindMyTree(state) {
       if (card) card.classList.add('hidden');
       if (fab) fab.classList.remove('hidden');
     },
-    (_err) => {
-      showStreetSearch(state);
+    (err) => {
+      // Show explanation + search fallback
+      showLocationDenied(state, err);
     },
-    { enableHighAccuracy: true, timeout: 10000 },
+    { enableHighAccuracy: true, timeout: 15000 },
   );
+}
+
+/**
+ * Shows a message when geolocation fails, with a search fallback.
+ */
+function showLocationDenied(state, err) {
+  const card = document.getElementById('find-my-tree');
+  if (!card) return;
+
+  const lang = window.__meinBaumLang || 'de';
+  card.classList.remove('hidden');
+  card.style.animation = 'none';
+  card.style.opacity = '1';
+  clearChildren(card);
+
+  const closeBtn = document.createElement('button');
+  closeBtn.className = 'card-close';
+  closeBtn.textContent = '×';
+  closeBtn.addEventListener('click', () => {
+    card.classList.add('hidden');
+    const fab = document.getElementById('find-my-tree-fab');
+    if (fab) fab.classList.remove('hidden');
+  });
+  card.appendChild(closeBtn);
+
+  const wrap = document.createElement('div');
+  wrap.style.padding = '16px 20px';
+  wrap.style.maxWidth = '320px';
+
+  // Message
+  const msg = document.createElement('div');
+  msg.style.fontSize = '13px';
+  msg.style.lineHeight = '1.6';
+  msg.style.color = 'var(--c-text-2)';
+  msg.style.marginBottom = '12px';
+
+  if (err && err.code === 1) {
+    // PERMISSION_DENIED
+    msg.textContent = lang === 'de'
+      ? 'Standortzugriff wurde blockiert. Klicke auf das Schloss-Symbol in der Adressleiste und erlaube den Standortzugriff, dann versuche es erneut.'
+      : 'Location access was blocked. Click the lock icon in the address bar, allow location access, then try again.';
+  } else {
+    msg.textContent = lang === 'de'
+      ? 'Standort konnte nicht ermittelt werden. Suche stattdessen nach einer Strasse:'
+      : 'Could not determine your location. Search for a street instead:';
+  }
+  wrap.appendChild(msg);
+
+  // Search input
+  const streets = Array.from(
+    new Set((state.treeData?.features ?? []).map(f => f.properties?.ba_strasse).filter(Boolean))
+  ).sort((a, b) => a.localeCompare(b, 'de'));
+
+  const input = document.createElement('input');
+  input.type = 'text';
+  input.className = 'street-search-input';
+  input.placeholder = lang === 'de' ? 'Strasse suchen…' : 'Search street…';
+  input.autocomplete = 'off';
+  wrap.appendChild(input);
+
+  const results = document.createElement('div');
+  results.className = 'street-results';
+  wrap.appendChild(results);
+
+  card.appendChild(wrap);
+  input.focus();
+
+  input.addEventListener('input', () => {
+    const query = input.value.trim().toLowerCase();
+    while (results.firstChild) results.removeChild(results.firstChild);
+    if (query.length < 2) return;
+
+    const matches = streets.filter(s => s.toLowerCase().includes(query)).slice(0, 8);
+    for (const street of matches) {
+      const item = document.createElement('div');
+      item.className = 'street-result';
+      item.textContent = street;
+      item.addEventListener('click', () => {
+        const found = state.treeData?.features.find(f => f.properties?.ba_strasse === street);
+        if (found) {
+          flyToTree(state.map, found);
+          showTreeDetail(state, found);
+        }
+        card.classList.add('hidden');
+        const fab = document.getElementById('find-my-tree-fab');
+        if (fab) fab.classList.remove('hidden');
+      });
+      results.appendChild(item);
+    }
+  });
 }
 
 /**
